@@ -1,563 +1,1482 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Merdeka — Modern Interactive Assignment</title>
-  <style>
-    /* ---------- Reset & base ---------- */
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
-    body{
-      font-family:Inter, "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:#f4f6f8;color:#111;transition:background .25s,color .25s;
-      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-    }
-    a{color:inherit}
-    .sr-only{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malaysia Merdeka - Interactive Educational Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary-blue: #010066;
+            --primary-red: #CC0001;
+            --primary-yellow: #FFCC00;
+            --primary-white: #FFFFFF;
+            --dark-blue: #0A0A2A;
+            --light-blue: #f0f8ff;
+            --text-dark: #333333;
+            --text-light: #f8f9fa;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
 
-    /* ---------- NAV ---------- */
-    nav{
-      position:fixed;inset:0 0 auto 0;height:68px;background:rgba(1,0,102,0.9);
-      display:flex;align-items:center;justify-content:space-between;padding:12px 22px;z-index:60;
-      backdrop-filter:blur(8px);box-shadow:0 6px 18px rgba(1,0,102,0.12);
-    }
-    .brand{display:flex;gap:12px;align-items:center;color:#ffcc00;font-weight:700}
-    .brand .flag-mini{width:36px;height:24px;border-radius:4px;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,.18)}
-    .nav-links{display:flex;gap:14px;align-items:center}
-    .nav-links button{background:transparent;border:0;color:#fff;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer}
-    .nav-links button.active, .nav-links button:hover{background:#cc0000}
-    .controls{display:flex;gap:10px;align-items:center;color:#ffcc00;font-weight:700}
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* ---------- HERO ---------- */
-    .hero{
-      height:84vh;padding-top:68px;display:flex;align-items:center;justify-content:center;
-      background-image:linear-gradient(180deg, rgba(1,0,102,0.35), rgba(204,0,0,0.12)), url('https://upload.wikimedia.org/wikipedia/commons/5/59/Stadium_Merdeka.jpg');
-      background-position:center;background-size:cover;background-attachment:fixed;color:#fff;text-align:center;
-    }
-    .hero .wrap{max-width:980px;padding:30px}
-    .hero h1{font-size:44px;letter-spacing:1px;margin-bottom:8px;text-shadow:0 6px 24px rgba(0,0,0,.35)}
-    .hero p{font-size:18px;opacity:.95}
+        html {
+            scroll-behavior: smooth;
+        }
 
-    /* ---------- LAYOUT ---------- */
-    main{max-width:1100px;margin:28px auto;padding:0 18px}
-    .layout{display:grid;grid-template-columns:1fr 320px;gap:22px}
-    @media (max-width:980px){.layout{grid-template-columns:1fr}.nav-links{display:none}}
-    .card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 10px 30px rgba(10,10,30,0.06)}
-    .section-title{color:#010066;margin-bottom:10px;font-size:22px}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--light-blue);
+            overflow-x: hidden;
+        }
 
-    /* ---------- TIMELINE ---------- */
-    .timeline{padding-left:18px;border-left:4px solid #cc0000}
-    .timeline .item{margin-bottom:18px}
-    .timeline h4{margin-bottom:6px;color:#010066}
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-    /* ---------- CARDS GRID ---------- */
-    .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+        section {
+            padding: 80px 0;
+        }
 
-    /* ---------- GALLERY ---------- */
-    .gallery img{width:100%;height:160px;object-fit:cover;border-radius:10px;display:block;cursor:pointer;box-shadow:0 8px 18px rgba(2,8,40,.08)}
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,20,.6);z-index:120;padding:20px}
-    .modal .inner{max-width:900px;width:100%;background:#fff;border-radius:10px;padding:14px;box-shadow:0 12px 36px rgba(0,0,0,.4)}
-    .modal img{width:100%;border-radius:8px}
+        h1, h2, h3, h4 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
 
-    /* ---------- QUIZ ---------- */
-    .quiz .opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-    .btn{background:#010066;color:#fff;padding:10px 14px;border:0;border-radius:8px;cursor:pointer;font-weight:700}
-    .btn.alt{background:#cc0000}
+        p {
+            margin-bottom: 1rem;
+        }
 
-    /* ---------- FEEDBACK (guestbook) ---------- */
-    form .row{margin-top:10px;display:flex;flex-direction:column;gap:8px}
-    input[type=text], textarea{padding:10px;border-radius:8px;border:1px solid #e6e9ee}
-    .guestbook{max-height:300px;overflow:auto;margin-top:12px;border-top:1px dashed #eee;padding-top:12px}
-    .entry{padding:8px 0;border-bottom:1px solid #f0f0f0}
+        .btn {
+            display: inline-block;
+            background: var(--primary-blue);
+            color: var(--primary-white);
+            padding: 12px 28px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
 
-    /* ---------- WAVING FLAG ---------- */
-    .flag-fixed{position:fixed;right:18px;bottom:18px;width:140px;z-index:80;backdrop-filter:blur(2px);border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(1,0,102,0.12)}
-    .flag-fixed img{width:100%;height:auto;display:block}
-    @keyframes flagwave{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
-    .flag-fixed{animation:flagwave 2.6s ease-in-out infinite}
+        .btn:hover {
+            background: var(--primary-red);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
 
-    /* ---------- FLOATING STARS ---------- */
-    .star{position:fixed;width:8px;height:8px;background:#ffcc00;border-radius:50%;opacity:.85;z-index:40;pointer-events:none}
+        .btn-alt {
+            background: var(--primary-red);
+        }
 
-    /* ---------- DARK MODE ---------- */
-    body.dark{background:#0b1220;color:#e9eef7}
-    body.dark .card{background:#0e1622;color:#e9eef7;box-shadow:none;border:1px solid rgba(255,255,255,0.04)}
-    body.dark nav{background:rgba(255,255,255,0.03)}
-    body.dark .modal .inner{background:#0e1622;color:#e9eef7}
-    body.dark input[type=text], body.dark textarea{background:#0b1220;color:#e9eef7;border:1px solid rgba(255,255,255,0.06)}
+        .btn-alt:hover {
+            background: var(--primary-blue);
+        }
 
-    /* ---------- FOOTER ---------- */
-    footer{margin-top:30px;padding:18px;text-align:center;color:#8890a6;font-size:14px}
-  </style>
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: var(--primary-red);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: rgba(1, 0, 102, 0.95);
+            color: var(--primary-white);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            padding: 0.7rem 0;
+            background: rgba(1, 0, 102, 0.98);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-yellow);
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--primary-white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--primary-red);
+            color: var(--primary-white);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-white);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(1, 0, 102, 0.8), rgba(204, 0, 1, 0.6)), url('https://images.unsplash.com/photo-1586769852044-692b6e5b9b65?ixlib=rb-4.0.3') center/cover;
+            color: var(--primary-white);
+            padding: 180px 0 100px;
+            text-align: center;
+            margin-top: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            color: var(--primary-white);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Countdown Section */
+        .countdown {
+            background: var(--primary-white);
+            padding: 60px 0;
+            text-align: center;
+            border-bottom: 3px solid var(--primary-red);
+        }
+
+        .countdown h2 {
+            margin-bottom: 2rem;
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .timer-box {
+            background: var(--primary-blue);
+            color: var(--primary-white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            min-width: 100px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .timer-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .timer-box span {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        /* Tabs Section */
+        .tabs {
+            background: var(--light-blue);
+        }
+
+        .tab-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            background: var(--primary-white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-blue);
+            color: var(--primary-white);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: var(--primary-red);
+            color: var(--primary-white);
+        }
+
+        .tab-content {
+            display: none;
+            background: var(--primary-white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* History Section */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background: var(--primary-red);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-content {
+            padding: 20px;
+            background: var(--primary-white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-blue);
+            transition: var(--transition);
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+        }
+
+        .timeline-year {
+            font-weight: 700;
+            color: var(--primary-red);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Leaders Section */
+        .leaders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .leader-card {
+            background: var(--primary-white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .leader-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .leader-img {
+            height: 300px;
+            background: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-white);
+            font-size: 4rem;
+        }
+
+        .leader-info {
+            padding: 1.5rem;
+        }
+
+        .leader-info h3 {
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .leader-role {
+            color: var(--primary-red);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* Education Section */
+        .education-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .education-card {
+            background: var(--primary-white);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .education-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .education-card i {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        /* Gallery Section */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            height: 250px;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: var(--primary-white);
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        /* Quiz Section */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--primary-white);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .quiz-question {
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-option {
+            background: var(--light-blue);
+            padding: 12px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            background: #e6f0ff;
+            border-color: var(--primary-blue);
+        }
+
+        .quiz-option.selected {
+            background: var(--primary-blue);
+            color: var(--primary-white);
+        }
+
+        .quiz-feedback {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 5px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #e6ffe6;
+            color: #009900;
+            border: 1px solid #009900;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #ffe6e6;
+            color: #cc0000;
+            border: 1px solid #cc0000;
+            display: block;
+        }
+
+        /* Feedback Section */
+        .feedback {
+            background: var(--light-blue);
+        }
+
+        .feedback-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--primary-white);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px rgba(1, 0, 102, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-blue);
+            color: var(--primary-white);
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--primary-yellow);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: var(--primary-white);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-yellow);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--primary-white);
+        }
+
+        .social-links a:hover {
+            background: var(--primary-yellow);
+            color: var(--primary-blue);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-blue);
+            color: var(--primary-white);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 999;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border: none;
+        }
+
+        .back-to-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary-red);
+            transform: translateY(-3px);
+        }
+
+        /* Modal for Gallery */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1001;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: var(--primary-white);
+            font-size: 40px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: none;
+            border: none;
+            z-index: 1002;
+        }
+
+        .close-modal:hover {
+            color: var(--primary-yellow);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--primary-blue);
+                flex-direction: column;
+                padding: 1rem 0;
+                text-align: center;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .timeline::after {
+                left: 31px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .tab-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 150px 0 80px;
+            }
+
+            .timer {
+                gap: 1rem;
+            }
+
+            .timer-box {
+                min-width: 80px;
+                padding: 1rem;
+            }
+
+            .timer-box span {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <!-- NAV -->
-  <nav>
-    <div class="brand">
-      <div class="flag-mini" aria-hidden="true">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/66/Flag_of_Malaysia.svg" style="width:100%;height:100%;display:block" alt="">
-      </div>
-      <div>
-        Merdeka Malaysia
-        <div style="font-size:12px;color:#ffed9c;margin-top:2px">Modern interactive assignment</div>
-      </div>
-    </div>
-
-    <div class="nav-links" role="navigation" aria-label="Main">
-      <!-- At least 4 subtopic tabs (History, Leaders, Culture, SDG Resources) -->
-      <button class="active" data-tab="home">Home</button>
-      <button data-tab="history">History</button>
-      <button data-tab="leaders">Leaders</button>
-      <button data-tab="culture">Culture</button>
-      <button data-tab="sdg">SDG — Quality Education</button>
-      <button data-tab="gallery">Gallery</button>
-      <button data-tab="quiz">Quiz</button>
-      <button data-tab="feedback">Feedback</button>
-    </div>
-
-    <div class="controls">
-      <div id="musicBtn" title="Play / Pause national anthem" style="cursor:pointer">🎵</div>
-      <div class="toggle-btn" id="themeToggle" title="Toggle dark mode" style="cursor:pointer">🌙</div>
-    </div>
-  </nav>
-
-  <!-- WAVING FLAG (fixed) -->
-  <div class="flag-fixed" aria-hidden="true">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/66/Flag_of_Malaysia.svg" alt="Jalur Gemilang">
-  </div>
-
-  <!-- FLOATING STARS (decorative) -->
-  <div id="stars-wrapper" aria-hidden="true"></div>
-
-  <!-- BACKGROUND MUSIC -->
-  <audio id="bgMusic" loop preload="none">
-    <source src="https://upload.wikimedia.org/wikipedia/commons/6/6d/National_Anthem_of_Malaysia_-_Negaraku.ogg" type="audio/ogg">
-  </audio>
-
-  <!-- HERO -->
-  <header class="hero" role="banner">
-    <div class="wrap">
-      <h1>Malaysia Merdeka — Celebrate & Learn</h1>
-      <p>Explore the history, heroes, culture, and a school-focused SDG activity (Quality Education). Interactive tasks and a feedback area included for your assignment.</p>
-    </div>
-  </header>
-
-  <!-- MAIN CONTENT -->
-  <main>
-    <div class="layout">
-      <!-- Main column -->
-      <div>
-
-        <!-- HOME (landing / overview) -->
-        <section id="home" class="card" aria-labelledby="homeTitle">
-          <h2 id="homeTitle" class="section-title">Welcome</h2>
-          <p style="margin-bottom:12px">This web project is tailored for a school Merdeka assignment. It combines Merdeka theme with a student activity linked to one SDG topic (Quality Education). Use the tabs to navigate subtopics. Complete the tasks and submit feedback in the Guestbook.</p>
-
-          <div class="card-grid" style="margin-top:10px">
-            <div class="card">
-              <h4 style="color:#010066">Quick Facts</h4>
-              <ul style="margin-top:8px">
-                <li><strong>Independence:</strong> 31 August 1957</li>
-                <li><strong>Venue:</strong> Stadium Merdeka</li>
-                <li><strong>First PM:</strong> Tunku Abdul Rahman</li>
-                <li><strong>Flag:</strong> Jalur Gemilang — 14 stripes & 14-point star</li>
-              </ul>
-            </div>
-
-            <div class="card">
-              <h4 style="color:#010066">Assignment Checklist</h4>
-              <ol style="margin-top:8px">
-                <li>At least 4 subtopics — done</li>
-                <li>Interactive elements (quiz & gallery) — done</li>
-                <li>Feedback form (guestbook saved locally) — done</li>
-                <li>Use HTML, CSS, JS — single-page app implemented</li>
-              </ol>
-            </div>
-
-            <div class="card">
-              <h4 style="color:#010066">Teacher Tips</h4>
-              <ul style="margin-top:8px">
-                <li>Replace placeholder images with local photos if required</li>
-                <li>Use the SDG section to demonstrate research skills</li>
-                <li>Show the guestbook during presentation</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <!-- HISTORY -->
-        <section id="history" class="card" style="display:none" aria-labelledby="historyTitle">
-          <h2 id="historyTitle" class="section-title">History Timeline</h2>
-          <div class="timeline">
-            <div class="item">
-              <h4>Before 1950s — Colonial Period</h4>
-              <p>Early resistance, political awakening and formation of local parties that pushed for greater rights.</p>
-            </div>
-            <div class="item">
-              <h4>1955 — First Federal Election</h4>
-              <p>Crucial political developments that shaped the leadership of an independent Malaya.</p>
-            </div>
-            <div class="item">
-              <h4>31 August 1957 — Merdeka</h4>
-              <p>Proclamation read by Tunku Abdul Rahman at Stadium Merdeka; a defining national moment.</p>
-            </div>
-            <div class="item">
-              <h4>16 September 1963 — Formation of Malaysia</h4>
-              <p>Federation expanded to include Sabah, Sarawak and (initially) Singapore.</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- LEADERS -->
-        <section id="leaders" class="card" style="display:none" aria-labelledby="leadersTitle">
-          <h2 id="leadersTitle" class="section-title">Key Figures</h2>
-          <div class="card-grid">
-            <div class="card">
-              <h4>Tunku Abdul Rahman</h4>
-              <p>Led negotiations that resulted in Merdeka; later the first Prime Minister.</p>
-            </div>
-            <div class="card">
-              <h4>Tuanku Abdul Rahman</h4>
-              <p>The first King (Yang di-Pertuan Agong) after independence.</p>
-            </div>
-            <div class="card">
-              <h4>Dato' Onn Jaafar</h4>
-              <p>Early political leader who influenced Malay political organisation.</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- CULTURE -->
-        <section id="culture" class="card" style="display:none" aria-labelledby="cultureTitle">
-          <h2 id="cultureTitle" class="section-title">Culture & Celebrations</h2>
-          <p style="margin-bottom:10px">Merdeka celebrations highlight Malaysia's multicultural identity — parades, traditional arts, music and community activities.</p>
-          <div class="card-grid">
-            <div class="card">
-              <h4>Parades</h4>
-              <p>National parade with marching contingents, bands and sometimes flypasts.</p>
-            </div>
-            <div class="card">
-              <h4>School Activities</h4>
-              <p>Flag-raising, patriotic songs, art competitions and Merdeka assemblies.</p>
-            </div>
-            <div class="card">
-              <h4>Community Events</h4>
-              <p>Food bazaars, cultural performances and volunteer-driven projects showing unity.</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- SDG SECTION (Quality Education) -->
-        <section id="sdg" class="card" style="display:none" aria-labelledby="sdgTitle">
-          <h2 id="sdgTitle" class="section-title">SDG Focus — Quality Education (student activity)</h2>
-
-          <p>This section is an assignment task: students must research, compare, and cite information from the Internet (teacher will grade research skills). Use the interactive tasks below to practice being resourceful.</p>
-
-          <h4 style="color:#010066;margin-top:12px">Activity 1 — Research Task</h4>
-          <p>Find two programs or projects in Malaysia that improve access to education (examples: school upgrade projects, scholarships, digital learning initiatives). Write the project names and one sentence about each in the Feedback Guestbook.</p>
-
-          <h4 style="color:#010066;margin-top:12px">Activity 2 — Quick Comparison (try to find these online)</h4>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <div class="card" style="flex:1;min-width:220px">
-              <strong>Question</strong>
-              <p style="margin-top:8px">Which Malaysian state launched the most recent digital learning project (search online)?</p>
-            </div>
-            <div class="card" style="flex:1;min-width:220px">
-              <strong>Evidence</strong>
-              <p style="margin-top:8px">Paste a short URL or note the source (e.g. Ministry website) into the guestbook when you submit your answer.</p>
-            </div>
-          </div>
-
-          <h4 style="color:#010066;margin-top:12px">Activity 3 — Classroom Challenge</h4>
-          <ol style="margin-top:8px">
-            <li>In groups, pick one education problem in your school (e.g., lack of laptops, poor library resources).</li>
-            <li>Propose one low-cost solution and prepare a 2-minute presentation.</li>
-            <li>Upload evidence or notes into the Guestbook as a short message.</li>
-          </ol>
-
-          <p style="margin-top:10px;font-style:italic;color:#555">Note: This web app does not fetch internet results automatically — the task is to teach students how to search and verify sources; students should paste sources into the guestbook for grading.</p>
-        </section>
-
-        <!-- GALLERY -->
-        <section id="gallery" class="card" style="display:none" aria-labelledby="galleryTitle">
-          <h2 id="galleryTitle" class="section-title">Gallery (click images)</h2>
-          <div class="card-grid">
-            <div style="grid-column:'span 1'">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Tunku_Abdul_Rahman_proclaiming_independence_of_Malaya.jpg" alt="Proclamation" onclick="openModal(this.src,'Proclamation at Stadium Merdeka — 1957')">
-            </div>
-            <div>
-              <img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Merdeka_square.jpg" alt="Merdeka Square" onclick="openModal(this.src,'Merdeka Square')">
-            </div>
-            <div>
-              <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/Stadium_Merdeka.jpg" alt="Stadium Merdeka" onclick="openModal(this.src,'Stadium Merdeka')">
-            </div>
-          </div>
-        </section>
-
-        <!-- QUIZ -->
-        <section id="quiz" class="card" style="display:none" aria-labelledby="quizTitle">
-          <h2 id="quizTitle" class="section-title">Interactive Quiz</h2>
-          <div class="quiz">
-            <p><strong>1.</strong> In what year was Merdeka declared?</p>
-            <div class="opts">
-              <button class="btn" onclick="answerQuiz(1,1957)">1957</button>
-              <button class="btn" onclick="answerQuiz(1,1963)">1963</button>
-              <button class="btn alt" onclick="answerQuiz(1,1945)">1945</button>
-            </div>
-
-            <p style="margin-top:12px"><strong>2.</strong> Who proclaimed independence?</p>
-            <div class="opts">
-              <button class="btn" onclick="answerQuiz(2,'tunku')">Tunku Abdul Rahman</button>
-              <button class="btn alt" onclick="answerQuiz(2,'other')">Someone else</button>
-            </div>
-
-            <div id="quizFeedback" style="margin-top:12px;font-weight:700;color:#010066"></div>
-          </div>
-        </section>
-
-        <!-- FEEDBACK / GUESTBOOK -->
-        <section id="feedback" class="card" style="display:none" aria-labelledby="feedbackTitle">
-          <h2 id="feedbackTitle" class="section-title">Feedback & Guestbook (submit research notes)</h2>
-
-          <p>Use this form to submit your name, short message, and any evidence/source links from your SDG research. Entries are saved locally (LocalStorage) so you can show them to your teacher during class.</p>
-
-          <form id="guestForm" onsubmit="saveEntry(event)" aria-label="Feedback form">
-            <div class="row">
-              <label class="sr-only" for="gname">Name</label>
-              <input id="gname" type="text" required placeholder="Your name (e.g., Siti)">
-            </div>
-            <div class="row">
-              <label class="sr-only" for="gmsg">Message</label>
-              <textarea id="gmsg" rows="4" required placeholder="What did you research? Paste source URL or short notes here."></textarea>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-              <button class="btn" type="submit">Save to Guestbook</button>
-              <button type="button" class="btn alt" onclick="clearGuestbook()">Clear Guestbook</button>
-            </div>
-          </form>
-
-          <div class="guestbook card" id="guestbook">
-            <!-- entries render here -->
-          </div>
-        </section>
-
-      </div>
-
-      <!-- Aside column -->
-      <aside>
-        <div class="card">
-          <h3 style="color:#010066">Mini Quiz Score</h3>
-          <div id="scoreBox">No quiz taken yet.</div>
-          <hr style="margin:12px 0;border:none;border-top:1px dashed #eee">
-          <h3 style="color:#010066">Quick Links / Tasks</h3>
-          <ul style="margin-top:8px">
-            <li><button style="border:0;background:transparent;color:#010066;cursor:pointer" onclick="openSectionFromAside('sdg')">SDG Research Task</button></li>
-            <li><button style="border:0;background:transparent;color:#010066;cursor:pointer" onclick="openSectionFromAside('gallery')">Open Gallery</button></li>
-            <li><button style="border:0;background:transparent;color:#010066;cursor:pointer" onclick="openSectionFromAside('feedback')">Open Guestbook</button></li>
-          </ul>
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <i class="fas fa-flag"></i>
+                    <span>Merdeka Malaysia</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#tabs">Explore</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#quiz">Quiz</a></li>
+                    <li><a href="#feedback">Feedback</a></li>
+                </ul>
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
         </div>
+    </header>
 
-        <div class="card" style="margin-top:14px">
-          <h3 style="color:#010066">Teacher Checklist</h3>
-          <ol style="margin-top:8px">
-            <li>4+ subtopics (History, Leaders, Culture, SDG)</li>
-            <li>Interactive elements (gallery, quiz)</li>
-            <li>Feedback guestbook (saved locally)</li>
-            <li>Modern Merdeka theme & SDG activity</li>
-          </ol>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container hero-content">
+            <h1>Celebrating Malaysia Merdeka</h1>
+            <p>Commemorating the historic day when Malaysia gained independence on August 31, 1957. Explore the journey, the heroes, and the spirit of freedom that shaped a nation.</p>
+            <div class="hero-btns">
+                <a href="#tabs" class="btn">Explore History</a>
+                <a href="#quiz" class="btn btn-alt">Take the Quiz</a>
+            </div>
         </div>
-      </aside>
+    </section>
+
+    <!-- Countdown Section -->
+    <section class="countdown">
+        <div class="container">
+            <h2>Countdown to Next Merdeka Day</h2>
+            <div class="timer">
+                <div class="timer-box">
+                    <span id="days">00</span>
+                    Days
+                </div>
+                <div class="timer-box">
+                    <span id="hours">00</span>
+                    Hours
+                </div>
+                <div class="timer-box">
+                    <span id="minutes">00</span>
+                    Minutes
+                </div>
+                <div class="timer-box">
+                    <span id="seconds">00</span>
+                    Seconds
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabs Section -->
+    <section id="tabs" class="tabs">
+        <div class="container">
+            <h2 class="section-title">Explore Malaysia Merdeka</h2>
+            
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="history">History Timeline</button>
+                <button class="tab-btn" data-tab="leaders">Founding Leaders</button>
+                <button class="tab-btn" data-tab="education">Education & Progress</button>
+                <button class="tab-btn" data-tab="celebrations">Celebrations</button>
+            </div>
+            
+            <div class="tab-content active" id="history">
+                <h3>History of Malaysia's Independence</h3>
+                <div class="timeline">
+                    <div class="timeline-item fade-in">
+                        <div class="timeline-content">
+                            <div class="timeline-year">Before 1950s</div>
+                            <h4>Colonial Period</h4>
+                            <p>Early resistance, political awakening and formation of local parties that pushed for greater rights.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item fade-in">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1955</div>
+                            <h4>First Federal Election</h4>
+                            <p>Crucial political developments that shaped the leadership of an independent Malaya.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item fade-in">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1956</div>
+                            <h4>Merdeka Mission</h4>
+                            <p>Tunku Abdul Rahman leads delegation to London, secures independence.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item fade-in">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1957</div>
+                            <h4>Independence Achieved</h4>
+                            <p>August 31: Malaya declares independence with Tunku as first Prime Minister.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item fade-in">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1963</div>
+                            <h4>Formation of Malaysia</h4>
+                            <p>Malaya unites with Sabah, Sarawak, and Singapore to form Malaysia.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="leaders">
+                <h3>Founding Fathers of Malaysia</h3>
+                <div class="leaders-grid">
+                    <div class="leader-card fade-in">
+                        <div class="leader-img"><i class="fas fa-crown"></i></div>
+                        <div class="leader-info">
+                            <h3>Tunku Abdul Rahman</h3>
+                            <div class="leader-role">First Prime Minister</div>
+                            <p>Father of Independence who led the Merdeka mission and famously shouted "Merdeka!" seven times at the Merdeka Stadium.</p>
+                        </div>
+                    </div>
+                    <div class="leader-card fade-in">
+                        <div class="leader-img"><i class="fas fa-briefcase"></i></div>
+                        <div class="leader-info">
+                            <h3>Tun Abdul Razak</h3>
+                            <div class="leader-role">Second Prime Minister</div>
+                            <p>Key negotiator for independence and architect of national development policies including the New Economic Policy.</p>
+                        </div>
+                    </div>
+                    <div class="leader-card fade-in">
+                        <div class="leader-img"><i class="fas fa-balance-scale"></i></div>
+                        <div class="leader-info">
+                            <h3>Tun Dr. Ismail</h3>
+                            <div class="leader-role">Home Minister</div>
+                            <p>Principal architect of Malaysia's foreign policy and security framework. Known for his integrity and principles.</p>
+                        </div>
+                    </div>
+                    <div class="leader-card fade-in">
+                        <div class="leader-img"><i class="fas fa-handshake"></i></div>
+                        <div class="leader-info">
+                            <h3>Tun V.T. Sambanthan</h3>
+                            <div class="leader-role">MIC President</div>
+                            <p>Championed Indian community rights and national unity in the Alliance. Promoted Tamil education and workers' welfare.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="education">
+                <h3>Education & National Progress</h3>
+                <p>Since independence, Malaysia has made significant strides in education, which has been a cornerstone of national development and progress.</p>
+                
+                <div class="education-content">
+                    <div class="education-card">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h4>Educational Reforms</h4>
+                        <p>Post-independence education policies focused on creating a national identity while preserving cultural diversity.</p>
+                    </div>
+                    <div class="education-card">
+                        <i class="fas fa-school"></i>
+                        <h4>School System Development</h4>
+                        <p>Establishment of national schools and universities to provide education for all Malaysians regardless of background.</p>
+                    </div>
+                    <div class="education-card">
+                        <i class="fas fa-book-open"></i>
+                        <h4>Literacy Improvement</h4>
+                        <p>Literacy rates have dramatically improved since 1957, with near-universal literacy achieved by the 21st century.</p>
+                    </div>
+                    <div class="education-card">
+                        <i class="fas fa-laptop"></i>
+                        <h4>Digital Education</h4>
+                        <p>Modern initiatives focus on integrating technology in classrooms and preparing students for the digital economy.</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <h4>Education & National Development</h4>
+                    <p>The development of Malaysia's education system since Merdeka has been instrumental in:</p>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>Building a skilled workforce for economic development</li>
+                        <li>Promoting national unity through shared educational experiences</li>
+                        <li>Advancing scientific and technological capabilities</li>
+                        <li>Preserving cultural heritage while embracing modernization</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="celebrations">
+                <h3>Merdeka Celebrations</h3>
+                <p>Every year on August 31st, Malaysians come together to celebrate independence with various events and activities that showcase national pride and unity.</p>
+                
+                <div class="education-content">
+                    <div class="education-card">
+                        <i class="fas fa-parade"></i>
+                        <h4>National Parade</h4>
+                        <p>The main celebration features marching contingents, cultural performances, and spectacular aerial displays.</p>
+                    </div>
+                    <div class="education-card">
+                        <i class="fas fa-flag"></i>
+                        <h4>Flag Hoisting</h4>
+                        <p>Ceremonies across the country where the Jalur Gemilang is raised accompanied by the national anthem.</p>
+                    </div>
+                    <div class="education-card">
+                        <i class="fas fa-music"></i>
+                        <h4>Patriotic Songs</h4>
+                        <p>Performance of patriotic songs and competitions that encourage national pride among citizens.</p>
+                    </div>
+                    <div class="education-card">
+                        <i class="fas fa-users"></i>
+                        <h4>Community Events</h4>
+                        <p>Local gatherings, food festivals, and cultural activities that strengthen community bonds.</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <h4>Theme of Celebrations</h4>
+                    <p>Each year, Merdeka celebrations follow a specific theme that reflects current national priorities and aspirations. Recent themes have focused on unity, resilience, and progress.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2 class="section-title">Merdeka Gallery</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1547981609-4b6bf67b9d7c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', 'Historical Merdeka Moment')">
+                    <img src="img/merdeka.jpeg" alt="Historical Merdeka Moment">
+                    <div class="gallery-overlay">
+                        <h3>Merdeka Declaration</h3>
+                        <p>August 31, 1957</p>
+                    </div>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1586769852044-692b6e5b9b65?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', 'National Parade')">
+                    <img src="img/merdeka-2025.jpg" alt="National Parade">
+                    <div class="gallery-overlay">
+                        <h3>National Parade</h3>
+                        <p>Annual Merdeka Celebration</p>
+                    </div>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', 'Malaysian People')">
+                    <img src="img/malaysian.jpeg    " alt="Malaysian People">
+                    <div class="gallery-overlay">
+                        <h3>Unity in Diversity</h3>
+                        <p>Malaysians Celebrating Together</p>
+                    </div>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1591035897819-f4bdf739a446?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', 'Tunku Abdul Rahman')">
+                    <img src="img/tunku.webp" alt="Tunku Abdul Rahman">
+                    <div class="gallery-overlay">
+                        <h3>Father of Independence</h3>
+                        <p>Tunku Abdul Rahman</p>
+                    </div>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', 'Fireworks')">
+                    <img src="img/fireworks.jpeg" alt="Fireworks">
+                    <div class="gallery-overlay">
+                        <h3>Merdeka Fireworks</h3>
+                        <p>Celebration Display</p>
+                    </div>
+                </div>
+                <div class="gallery-item" onclick="openModal('https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', 'Children with Flags')">
+                    <img src="img/kids.jpg" alt="Children with Flags">
+                    <div class="gallery-overlay">
+                        <h3>Future Generation</h3>
+                        <p>Children with Jalur Gemilang</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz" class="quiz">
+        <div class="container">
+            <h2 class="section-title">Merdeka Quiz</h2>
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <h3>1. In what year was Merdeka declared?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this, 1957)">1957</div>
+                        <div class="quiz-option" onclick="selectOption(this, 1963)">1963</div>
+                        <div class="quiz-option" onclick="selectOption(this, 1945)">1945</div>
+                        <div class="quiz-option" onclick="selectOption(this, 1955)">1955</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>2. Who proclaimed independence?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this, 'tunku')">Tunku Abdul Rahman</div>
+                        <div class="quiz-option" onclick="selectOption(this, 'abdulrazak')">Tun Abdul Razak</div>
+                        <div class="quiz-option" onclick="selectOption(this, 'onnjaafar')">Dato' Onn Jaafar</div>
+                        <div class="quiz-option" onclick="selectOption(this, 'tunismail')">Tun Dr. Ismail</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>3. Where was the independence declaration made?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this, 'stadiummerdeka')">Stadium Merdeka</div>
+                        <div class="quiz-option" onclick="selectOption(this, 'dataranmerdeka')">Dataran Merdeka</div>
+                        <div class="quiz-option" onclick="selectOption(this, 'padang')">Padang, Kuala Lumpur</div>
+                        <div class="quiz-option" onclick="selectOption(this, 'parliament')">Parliament House</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>4. What has been a key focus of Malaysia's development since independence?</h3>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="selectOption(this, 'education')">Education</div>
+                        <div class="quiz-option" onclick="selectOption(this, 'military')">Military Expansion</div>
+                        <div class="quiz-option" onclick="selectOption(this, 'isolation')">Isolationism</div>
+                        <div class="quiz-option" onclick="selectOption(this, 'agriculture')">Solely Agriculture</div>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="checkAnswers()">Submit Answers</button>
+                
+                <div id="quizFeedback" class="quiz-feedback"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feedback Section -->
+    <section id="feedback" class="feedback">
+        <div class="container">
+            <h2 class="section-title">Share Your Feedback</h2>
+            <div class="feedback-container">
+                <form id="feedbackForm">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Feedback Category</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select a category</option>
+                            <option value="general">General Feedback</option>
+                            <option value="content">Content Suggestion</option>
+                            <option value="technical">Technical Issue</option>
+                            <option value="educational">Educational Value</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Feedback</label>
+                        <textarea id="message" name="message" placeholder="Please share your thoughts, suggestions, or any issues you encountered..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rating">Rate Your Experience (1-5)</label>
+                        <select id="rating" name="rating" required>
+                            <option value="">Select a rating</option>
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="3">3 - Good</option>
+                            <option value="2">2 - Fair</option>
+                            <option value="1">1 - Poor</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn">Submit Feedback</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About This Site</h3>
+                    <p>An educational resource dedicated to preserving and sharing the history of Malaysia's independence journey with a focus on education and national development.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#tabs">Explore</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#quiz">Quiz</a></li>
+                        <li><a href="#feedback">Feedback</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>For educational inquiries or to share Merdeka stories:</p>
+                    <p>Email: info@merdekamalaysia.com</p>
+                    <p>Phone: +60 3-1234 5678</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Malaysia Merdeka Educational Project. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to Top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Gallery Modal -->
+    <div id="modal" class="modal">
+        <button class="close-modal" aria-label="Close Modal" onclick="closeModal()">&times;</button>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="">
+        </div>
     </div>
-  </main>
 
-  <!-- IMAGE MODAL -->
-  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="inner">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <strong id="modalTitle"></strong>
-        <button onclick="closeModal()" class="btn alt">Close</button>
-      </div>
-      <img id="modalImg" src="" alt="">
-    </div>
-  </div>
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
 
-  <footer>
-    © 2025 — Merdeka Interactive Student Project. Replace or add images and sources before final submission.
-  </footer>
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            // Back to top button
+            const backToTopButton = document.getElementById('backToTop');
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add('active');
+            } else {
+                backToTopButton.classList.remove('active');
+            }
+            
+            // Update active nav link
+            updateActiveNavLink();
+        });
 
-  <script>
-    /* ---------- Tab navigation ---------- */
-    const navButtons = document.querySelectorAll('.nav-links button');
-    function setActiveButton(btn){
-      navButtons.forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-    }
-    navButtons.forEach(b=>{
-      b.addEventListener('click', ()=> {
-        const tab = b.dataset.tab;
-        showSection(tab);
-        setActiveButton(b);
-      });
-    });
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    // Update active nav link
+                    document.querySelectorAll('.nav-links a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Scroll to target
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Close mobile menu if open
+                    document.querySelector('.nav-links').classList.remove('active');
+                }
+            });
+        });
 
-    function showSection(id){
-      // hide all sections inside main (only direct children that are sections)
-      document.querySelectorAll('main section').forEach(s=> s.style.display = 'none');
-      const el = document.getElementById(id);
-      if(el) el.style.display = 'block';
-      // scroll to top for presentation
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
+        // Update active nav link on scroll
+        function updateActiveNavLink() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
 
-    // default initial state: show home
-    showSection('home');
+        // Countdown Timer
+        function updateCountdown() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            let merdekaDate = new Date(currentYear, 7, 31); // August 31 (month is 0-indexed)
+            
+            // If Merdeka Day has passed this year, target next year
+            if (now > merdekaDate) {
+                merdekaDate = new Date(currentYear + 1, 7, 31);
+            }
+            
+            const timeDifference = merdekaDate - now;
+            
+            const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        // Update countdown every second
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call
 
-    // helper for aside quick links
-    function openSectionFromAside(id){
-      showSection(id);
-      // update nav active state
-      navButtons.forEach(b=> b.classList.toggle('active', b.dataset.tab === id));
-    }
+        // Back to top button
+        document.getElementById('backToTop').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
 
-    /* ---------- Dark mode toggle ---------- */
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', ()=>{
-      document.body.classList.toggle('dark');
-      themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-    });
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
 
-    /* ---------- Music control ---------- */
-    const musicBtn = document.getElementById('musicBtn');
-    const music = document.getElementById('bgMusic');
-    let musicPlaying = false;
-    musicBtn.addEventListener('click', ()=> toggleMusic());
-    function toggleMusic(){
-      if(music.paused){
-        music.play().catch(()=>{/* autoplay may be blocked - ignore */});
-        musicBtn.textContent = '🔊';
-        musicPlaying = true;
-      } else {
-        music.pause();
-        musicBtn.textContent = '🎵';
-        musicPlaying = false;
-      }
-    }
+        // Gallery Modal
+        function openModal(src, title) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('modalImage').alt = title;
+            document.getElementById('modal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+        
+        // Close modal when clicking outside the image
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
 
-    /* ---------- Floating stars (decorative) ---------- */
-    const starsWrap = document.getElementById('stars-wrapper');
-    for(let i=0;i<18;i++){
-      const s = document.createElement('div');
-      s.className = 'star';
-      const left = Math.random()*100;
-      const top = 60 + Math.random()*40; // float from lower area
-      s.style.left = left + 'vw';
-      s.style.top = top + 'vh';
-      s.style.width = (6 + Math.random()*8) + 'px';
-      s.style.height = s.style.width;
-      s.style.opacity = (0.5 + Math.random()*0.6);
-      s.style.transform = 'translateY(0)';
-      const dur = 6 + Math.random()*8;
-      s.style.transition = `transform ${dur}s linear`;
-      starsWrap.appendChild(s);
-      // animate upward periodically
-      (function(el, d){
-        setInterval(()=> {
-          el.style.transform = 'translateY(-120vh)';
-          setTimeout(()=> el.style.transform = 'translateY(0)', d*1000 + 100);
-        }, (d+2)*1000);
-      })(s, dur);
-    }
+        // Quiz functionality
+        let selectedOptions = {};
+        
+        function selectOption(element, value) {
+            const question = element.parentElement.parentElement;
+            const questionIndex = Array.from(document.querySelectorAll('.quiz-question')).indexOf(question);
+            
+            // Remove selected class from all options in this question
+            const options = question.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Store the selected value
+            selectedOptions[questionIndex] = value;
+        }
+        
+        function checkAnswers() {
+            const correctAnswers = [1957, 'tunku', 'stadiummerdeka', 'education'];
+            let correctCount = 0;
+            
+            for (let i = 0; i < correctAnswers.length; i++) {
+                if (selectedOptions[i] === correctAnswers[i]) {
+                    correctCount++;
+                }
+            }
+            
+            const feedback = document.getElementById('quizFeedback');
+            feedback.textContent = `You got ${correctCount} out of ${correctAnswers.length} correct!`;
+            
+            if (correctCount === correctAnswers.length) {
+                feedback.className = 'quiz-feedback correct';
+                feedback.textContent += ' Excellent! You know your Merdeka history well.';
+            } else if (correctCount >= 2) {
+                feedback.className = 'quiz-feedback correct';
+                feedback.textContent += ' Good job! You know quite a bit about Merdeka.';
+            } else {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.textContent += ' Keep learning about Malaysia\'s independence history!';
+            }
+        }
 
-    /* ---------- Gallery modal ---------- */
-    function openModal(src, title){
-      document.getElementById('modalImg').src = src;
-      document.getElementById('modalTitle').textContent = title || '';
-      const modal = document.getElementById('modal');
-      modal.style.display = 'flex';
-      modal.setAttribute('aria-hidden','false');
-    }
-    function closeModal(){
-      const modal = document.getElementById('modal');
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden','true');
-      document.getElementById('modalImg').src = '';
-    }
+        // Feedback form submission
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const category = document.getElementById('category').value;
+            const message = document.getElementById('message').value;
+            const rating = document.getElementById('rating').value;
+            
+            // In a real application, you would send this data to a server
+            // For this demo, we'll just show an alert
+            alert(`Thank you, ${name}! Your feedback has been received.\n\nWe appreciate your ${rating}-star rating and will review your ${category} feedback.`);
+            
+            // Reset the form
+            this.reset();
+        });
 
-    // close modal on ESC
-    document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeModal(); });
-
-    /* ---------- Quiz logic ---------- */
-    const correctAnswers = {1:1957, 2:'tunku'};
-    const quizFeedback = document.getElementById('quizFeedback');
-    let userScore = JSON.parse(localStorage.getItem('merdekaScore') || '0');
-    const scoreBox = document.getElementById('scoreBox');
-    scoreBox.textContent = userScore ? `Last score: ${userScore} point(s)` : 'No quiz taken yet.';
-
-    function answerQuiz(qid, val){
-      const correct = correctAnswers[qid];
-      let awarded = 0;
-      if(qid === 1 && Number(val) === Number(correct)) awarded = 1;
-      if(qid === 2 && String(val) === String(correct)) awarded = 1;
-      // accumulate and store (simple per session score)
-      userScore = (userScore || 0) + awarded;
-      localStorage.setItem('merdekaScore', JSON.stringify(userScore));
-      scoreBox.textContent = `Last score: ${userScore} point(s)`;
-      quizFeedback.textContent = awarded ? 'Correct! Well done.' : 'Incorrect — try the next question.';
-      // gentle highlight
-      setTimeout(()=> quizFeedback.textContent = '', 4000);
-    }
-
-    /* ---------- Guestbook (feedback) ---------- */
-    const guestForm = document.getElementById('guestForm');
-    const guestbookEl = document.getElementById('guestbook');
-
-    function loadGuestbook(){
-      const list = JSON.parse(localStorage.getItem('merdekaGuestbook') || '[]');
-      if(!list.length){ guestbookEl.innerHTML = '<div style="color:#888">No messages yet. Submit your research evidence here.</div>'; return; }
-      guestbookEl.innerHTML = list.map(e=>{
-        return `<div class="entry"><strong>${escapeHtml(e.name)}</strong> <small style="color:#666"> — ${escapeHtml(e.time)}</small><div style="margin-top:6px">${escapeHtml(e.msg)}</div></div>`;
-      }).join('');
-    }
-
-    function saveEntry(e){
-      e.preventDefault();
-      const name = document.getElementById('gname').value.trim();
-      const msg = document.getElementById('gmsg').value.trim();
-      if(!name || !msg) return alert('Please enter name and a short message or source.');
-      const list = JSON.parse(localStorage.getItem('merdekaGuestbook') || '[]');
-      list.unshift({name, msg, time:new Date().toLocaleString()});
-      localStorage.setItem('merdekaGuestbook', JSON.stringify(list));
-      guestForm.reset();
-      loadGuestbook();
-      alert('Saved locally. Show this page to your teacher for grading.');
-    }
-
-    function clearGuestbook(){
-      if(!confirm('Clear all guestbook entries locally?')) return;
-      localStorage.removeItem('merdekaGuestbook');
-      loadGuestbook();
-    }
-
-    function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
-    // init
-    loadGuestbook();
-
-    /* ---------- Accessibility: allow nav keyboard use ---------- */
-    document.querySelectorAll('.nav-links button').forEach(btn=>{
-      btn.addEventListener('keydown', (e)=>{
-        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
-      });
-    });
-
-    /* ---------- Ensure home is visible on load ---------- */
-    window.addEventListener('load', ()=> {
-      showSection('home');
-      // update nav active visually (in case mobile)
-      navButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === 'home'));
-    });
-  </script>
+        // Fade in animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeInOnScroll = () => {
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        // Set initial state for fade elements
+        fadeElements.forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        });
+        
+        window.addEventListener('scroll', fadeInOnScroll);
+        fadeInOnScroll(); // Initial check
+    </script>
 </body>
 </html>
