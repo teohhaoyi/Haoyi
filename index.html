@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Merdeka — Modern Interactive Assignment</title>
+  <style>
+    /* ---------- Reset & base ---------- */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:Inter, "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:#f4f6f8;color:#111;transition:background .25s,color .25s;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    }
+    a{color:inherit}
+    .sr-only{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
+
+    /* ---------- NAV ---------- */
+    nav{
+      position:fixed;inset:0 0 auto 0;height:68px;background:rgba(1,0,102,0.9);
+      display:flex;align-items:center;justify-content:space-between;padding:12px 22px;z-index:60;
+      backdrop-filter:blur(8px);box-shadow:0 6px 18px rgba(1,0,102,0.12);
+    }
+    .brand{display:flex;gap:12px;align-items:center;color:#ffcc00;font-weight:700}
+    .brand .flag-mini{width:36px;height:24px;border-radius:4px;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,.18)}
+    .nav-links{display:flex;gap:14px;align-items:center}
+    .nav-links button{background:transparent;border:0;color:#fff;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer}
+    .nav-links button.active, .nav-links button:hover{background:#cc0000}
+    .controls{display:flex;gap:10px;align-items:center;color:#ffcc00;font-weight:700}
+
+    /* ---------- HERO ---------- */
+    .hero{
+      height:84vh;padding-top:68px;display:flex;align-items:center;justify-content:center;
+      background-image:linear-gradient(180deg, rgba(1,0,102,0.35), rgba(204,0,0,0.12)), url('https://upload.wikimedia.org/wikipedia/commons/5/59/Stadium_Merdeka.jpg');
+      background-position:center;background-size:cover;background-attachment:fixed;color:#fff;text-align:center;
+    }
+    .hero .wrap{max-width:980px;padding:30px}
+    .hero h1{font-size:44px;letter-spacing:1px;margin-bottom:8px;text-shadow:0 6px 24px rgba(0,0,0,.35)}
+    .hero p{font-size:18px;opacity:.95}
+
+    /* ---------- LAYOUT ---------- */
+    main{max-width:1100px;margin:28px auto;padding:0 18px}
+    .layout{display:grid;grid-template-columns:1fr 320px;gap:22px}
+    @media (max-width:980px){.layout{grid-template-columns:1fr}.nav-links{display:none}}
+    .card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 10px 30px rgba(10,10,30,0.06)}
+    .section-title{color:#010066;margin-bottom:10px;font-size:22px}
+
+    /* ---------- TIMELINE ---------- */
+    .timeline{padding-left:18px;border-left:4px solid #cc0000}
+    .timeline .item{margin-bottom:18px}
+    .timeline h4{margin-bottom:6px;color:#010066}
+
+    /* ---------- CARDS GRID ---------- */
+    .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+
+    /* ---------- GALLERY ---------- */
+    .gallery img{width:100%;height:160px;object-fit:cover;border-radius:10px;display:block;cursor:pointer;box-shadow:0 8px 18px rgba(2,8,40,.08)}
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,20,.6);z-index:120;padding:20px}
+    .modal .inner{max-width:900px;width:100%;background:#fff;border-radius:10px;padding:14px;box-shadow:0 12px 36px rgba(0,0,0,.4)}
+    .modal img{width:100%;border-radius:8px}
+
+    /* ---------- QUIZ ---------- */
+    .quiz .opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .btn{background:#010066;color:#fff;padding:10px 14px;border:0;border-radius:8px;cursor:pointer;font-weight:700}
+    .btn.alt{background:#cc0000}
+
+    /* ---------- FEEDBACK (guestbook) ---------- */
+    form .row{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+    input[type=text], textarea{padding:10px;border-radius:8px;border:1px solid #e6e9ee}
+    .guestbook{max-height:300px;overflow:auto;margin-top:12px;border-top:1px dashed #eee;padding-top:12px}
+    .entry{padding:8px 0;border-bottom:1px solid #f0f0f0}
+
+    /* ---------- WAVING FLAG ---------- */
+    .flag-fixed{position:fixed;right:18px;bottom:18px;width:140px;z-index:80;backdrop-filter:blur(2px);border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(1,0,102,0.12)}
+    .flag-fixed img{width:100%;height:auto;display:block}
+    @keyframes flagwave{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+    .flag-fixed{animation:flagwave 2.6s ease-in-out infinite}
+
+    /* ---------- FLOATING STARS ---------- */
+    .star{position:fixed;width:8px;height:8px;background:#ffcc00;border-radius:50%;opacity:.85;z-index:40;pointer-events:none}
+
+    /* ---------- DARK MODE ---------- */
+    body.dark{background:#0b1220;color:#e9eef7}
+    body.dark .card{background:#0e1622;color:#e9eef7;box-shadow:none;border:1px solid rgba(255,255,255,0.04)}
+    body.dark nav{background:rgba(255,255,255,0.03)}
+    body.dark .modal .inner{background:#0e1622;color:#e9eef7}
+    body.dark input[type=text], body.dark textarea{background:#0b1220;color:#e9eef7;border:1px solid rgba(255,255,255,0.06)}
+
+    /* ---------- FOOTER ---------- */
+    footer{margin-top:30px;padding:18px;text-align:center;color:#8890a6;font-size:14px}
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="brand">
+      <div class="flag-mini" aria-hidden="true">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/66/Flag_of_Malaysia.svg" style="width:100%;height:100%;display:block" alt="">
+      </div>
+      <div>
+        Merdeka Malaysia
+        <div style="font-size:12px;color:#ffed9c;margin-top:2px">Modern interactive assignment</div>
+      </div>
+    </div>
+
+    <div class="nav-links" role="navigation" aria-label="Main">
+      <!-- At least 4 subtopic tabs (History, Leaders, Culture, SDG Resources) -->
+      <button class="active" data-tab="home">Home</button>
+      <button data-tab="history">History</button>
+      <button data-tab="leaders">Leaders</button>
+      <button data-tab="culture">Culture</button>
+      <button data-tab="sdg">SDG — Quality Education</button>
+      <button data-tab="gallery">Gallery</button>
+      <button data-tab="quiz">Quiz</button>
+      <button data-tab="feedback">Feedback</button>
+    </div>
+
+    <div class="controls">
+      <div id="musicBtn" title="Play / Pause national anthem" style="cursor:pointer">🎵</div>
+      <div class="toggle-btn" id="themeToggle" title="Toggle dark mode" style="cursor:pointer">🌙</div>
+    </div>
+  </nav>
+
+  <!-- WAVING FLAG (fixed) -->
+  <div class="flag-fixed" aria-hidden="true">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/66/Flag_of_Malaysia.svg" alt="Jalur Gemilang">
+  </div>
+
+  <!-- FLOATING STARS (decorative) -->
+  <div id="stars-wrapper" aria-hidden="true"></div>
+
+  <!-- BACKGROUND MUSIC -->
+  <audio id="bgMusic" loop preload="none">
+    <source src="https://upload.wikimedia.org/wikipedia/commons/6/6d/National_Anthem_of_Malaysia_-_Negaraku.ogg" type="audio/ogg">
+  </audio>
+
+  <!-- HERO -->
+  <header class="hero" role="banner">
+    <div class="wrap">
+      <h1>Malaysia Merdeka — Celebrate & Learn</h1>
+      <p>Explore the history, heroes, culture, and a school-focused SDG activity (Quality Education). Interactive tasks and a feedback area included for your assignment.</p>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="layout">
+      <!-- Main column -->
+      <div>
+
+        <!-- HOME (landing / overview) -->
+        <section id="home" class="card" aria-labelledby="homeTitle">
+          <h2 id="homeTitle" class="section-title">Welcome</h2>
+          <p style="margin-bottom:12px">This web project is tailored for a school Merdeka assignment. It combines Merdeka theme with a student activity linked to one SDG topic (Quality Education). Use the tabs to navigate subtopics. Complete the tasks and submit feedback in the Guestbook.</p>
+
+          <div class="card-grid" style="margin-top:10px">
+            <div class="card">
+              <h4 style="color:#010066">Quick Facts</h4>
+              <ul style="margin-top:8px">
+                <li><strong>Independence:</strong> 31 August 1957</li>
+                <li><strong>Venue:</strong> Stadium Merdeka</li>
+                <li><strong>First PM:</strong> Tunku Abdul Rahman</li>
+                <li><strong>Flag:</strong> Jalur Gemilang — 14 stripes & 14-point star</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h4 style="color:#010066">Assignment Checklist</h4>
+              <ol style="margin-top:8px">
+                <li>At least 4 subtopics — done</li>
+                <li>Interactive elements (quiz & gallery) — done</li>
+                <li>Feedback form (guestbook saved locally) — done</li>
+                <li>Use HTML, CSS, JS — single-page app implemented</li>
+              </ol>
+            </div>
+
+            <div class="card">
+              <h4 style="color:#010066">Teacher Tips</h4>
+              <ul style="margin-top:8px">
+                <li>Replace placeholder images with local photos if required</li>
+                <li>Use the SDG section to demonstrate research skills</li>
+                <li>Show the guestbook during presentation</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- HISTORY -->
+        <section id="history" class="card" style="display:none" aria-labelledby="historyTitle">
+          <h2 id="historyTitle" class="section-title">History Timeline</h2>
+          <div class="timeline">
+            <div class="item">
+              <h4>Before 1950s — Colonial Period</h4>
+              <p>Early resistance, political awakening and formation of local parties that pushed for greater rights.</p>
+            </div>
+            <div class="item">
+              <h4>1955 — First Federal Election</h4>
+              <p>Crucial political developments that shaped the leadership of an independent Malaya.</p>
+            </div>
+            <div class="item">
+              <h4>31 August 1957 — Merdeka</h4>
+              <p>Proclamation read by Tunku Abdul Rahman at Stadium Merdeka; a defining national moment.</p>
+            </div>
+            <div class="item">
+              <h4>16 September 1963 — Formation of Malaysia</h4>
+              <p>Federation expanded to include Sabah, Sarawak and (initially) Singapore.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- LEADERS -->
+        <section id="leaders" class="card" style="display:none" aria-labelledby="leadersTitle">
+          <h2 id="leadersTitle" class="section-title">Key Figures</h2>
+          <div class="card-grid">
+            <div class="card">
+              <h4>Tunku Abdul Rahman</h4>
+              <p>Led negotiations that resulted in Merdeka; later the first Prime Minister.</p>
+            </div>
+            <div class="card">
+              <h4>Tuanku Abdul Rahman</h4>
+              <p>The first King (Yang di-Pertuan Agong) after independence.</p>
+            </div>
+            <div class="card">
+              <h4>Dato' Onn Jaafar</h4>
+              <p>Early political leader who influenced Malay political organisation.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- CULTURE -->
+        <section id="culture" class="card" style="display:none" aria-labelledby="cultureTitle">
+          <h2 id="cultureTitle" class="section-title">Culture & Celebrations</h2>
+          <p style="margin-bottom:10px">Merdeka celebrations highlight Malaysia's multicultural identity — parades, traditional arts, music and community activities.</p>
+          <div class="card-grid">
+            <div class="card">
+              <h4>Parades</h4>
+              <p>National parade with marching contingents, bands and sometimes flypasts.</p>
+            </div>
+            <div class="card">
+              <h4>School Activities</h4>
+              <p>Flag-raising, patriotic songs, art competitions and Merdeka assemblies.</p>
+            </div>
+            <div class="card">
+              <h4>Community Events</h4>
+              <p>Food bazaars, cultural performances and volunteer-driven projects showing unity.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SDG SECTION (Quality Education) -->
+        <section id="sdg" class="card" style="display:none" aria-labelledby="sdgTitle">
+          <h2 id="sdgTitle" class="section-title">SDG Focus — Quality Education (student activity)</h2>
+
+          <p>This section is an assignment task: students must research, compare, and cite information from the Internet (teacher will grade research skills). Use the interactive tasks below to practice being resourceful.</p>
+
+          <h4 style="color:#010066;margin-top:12px">Activity 1 — Research Task</h4>
+          <p>Find two programs or projects in Malaysia that improve access to education (examples: school upgrade projects, scholarships, digital learning initiatives). Write the project names and one sentence about each in the Feedback Guestbook.</p>
+
+          <h4 style="color:#010066;margin-top:12px">Activity 2 — Quick Comparison (try to find these online)</h4>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div class="card" style="flex:1;min-width:220px">
+              <strong>Question</strong>
+              <p style="margin-top:8px">Which Malaysian state launched the most recent digital learning project (search online)?</p>
+            </div>
+            <div class="card" style="flex:1;min-width:220px">
+              <strong>Evidence</strong>
+              <p style="margin-top:8px">Paste a short URL or note the source (e.g. Ministry website) into the guestbook when you submit your answer.</p>
+            </div>
+          </div>
+
+          <h4 style="color:#010066;margin-top:12px">Activity 3 — Classroom Challenge</h4>
+          <ol style="margin-top:8px">
+            <li>In groups, pick one education problem in your school (e.g., lack of laptops, poor library resources).</li>
+            <li>Propose one low-cost solution and prepare a 2-minute presentation.</li>
+            <li>Upload evidence or notes into the Guestbook as a short message.</li>
+          </ol>
+
+          <p style="margin-top:10px;font-style:italic;color:#555">Note: This web app does not fetch internet results automatically — the task is to teach students how to search and verify sources; students should paste sources into the guestbook for grading.</p>
+        </section>
+
+        <!-- GALLERY -->
+        <section id="gallery" class="card" style="display:none" aria-labelledby="galleryTitle">
+          <h2 id="galleryTitle" class="section-title">Gallery (click images)</h2>
+          <div class="card-grid">
+            <div style="grid-column:'span 1'">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Tunku_Abdul_Rahman_proclaiming_independence_of_Malaya.jpg" alt="Proclamation" onclick="openModal(this.src,'Proclamation at Stadium Merdeka — 1957')">
+            </div>
+            <div>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Merdeka_square.jpg" alt="Merdeka Square" onclick="openModal(this.src,'Merdeka Square')">
+            </div>
+            <div>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/Stadium_Merdeka.jpg" alt="Stadium Merdeka" onclick="openModal(this.src,'Stadium Merdeka')">
+            </div>
+          </div>
+        </section>
+
+        <!-- QUIZ -->
+        <section id="quiz" class="card" style="display:none" aria-labelledby="quizTitle">
+          <h2 id="quizTitle" class="section-title">Interactive Quiz</h2>
+          <div class="quiz">
+            <p><strong>1.</strong> In what year was Merdeka declared?</p>
+            <div class="opts">
+              <button class="btn" onclick="answerQuiz(1,1957)">1957</button>
+              <button class="btn" onclick="answerQuiz(1,1963)">1963</button>
+              <button class="btn alt" onclick="answerQuiz(1,1945)">1945</button>
+            </div>
+
+            <p style="margin-top:12px"><strong>2.</strong> Who proclaimed independence?</p>
+            <div class="opts">
+              <button class="btn" onclick="answerQuiz(2,'tunku')">Tunku Abdul Rahman</button>
+              <button class="btn alt" onclick="answerQuiz(2,'other')">Someone else</button>
+            </div>
+
+            <div id="quizFeedback" style="margin-top:12px;font-weight:700;color:#010066"></div>
+          </div>
+        </section>
+
+        <!-- FEEDBACK / GUESTBOOK -->
+        <section id="feedback" class="card" style="display:none" aria-labelledby="feedbackTitle">
+          <h2 id="feedbackTitle" class="section-title">Feedback & Guestbook (submit research notes)</h2>
+
+          <p>Use this form to submit your name, short message, and any evidence/source links from your SDG research. Entries are saved locally (LocalStorage) so you can show them to your teacher during class.</p>
+
+          <form id="guestForm" onsubmit="saveEntry(event)" aria-label="Feedback form">
+            <div class="row">
+              <label class="sr-only" for="gname">Name</label>
+              <input id="gname" type="text" required placeholder="Your name (e.g., Siti)">
+            </div>
+            <div class="row">
+              <label class="sr-only" for="gmsg">Message</label>
+              <textarea id="gmsg" rows="4" required placeholder="What did you research? Paste source URL or short notes here."></textarea>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+              <button class="btn" type="submit">Save to Guestbook</button>
+              <button type="button" class="btn alt" onclick="clearGuestbook()">Clear Guestbook</button>
+            </div>
+          </form>
+
+          <div class="guestbook card" id="guestbook">
+            <!-- entries render here -->
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Aside column -->
+      <aside>
+        <div class="card">
+          <h3 style="color:#010066">Mini Quiz Score</h3>
+          <div id="scoreBox">No quiz taken yet.</div>
+          <hr style="margin:12px 0;border:none;border-top:1px dashed #eee">
+          <h3 style="color:#010066">Quick Links / Tasks</h3>
+          <ul style="margin-top:8px">
+            <li><button style="border:0;background:transparent;color:#010066;cursor:pointer" onclick="openSectionFromAside('sdg')">SDG Research Task</button></li>
+            <li><button style="border:0;background:transparent;color:#010066;cursor:pointer" onclick="openSectionFromAside('gallery')">Open Gallery</button></li>
+            <li><button style="border:0;background:transparent;color:#010066;cursor:pointer" onclick="openSectionFromAside('feedback')">Open Guestbook</button></li>
+          </ul>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <h3 style="color:#010066">Teacher Checklist</h3>
+          <ol style="margin-top:8px">
+            <li>4+ subtopics (History, Leaders, Culture, SDG)</li>
+            <li>Interactive elements (gallery, quiz)</li>
+            <li>Feedback guestbook (saved locally)</li>
+            <li>Modern Merdeka theme & SDG activity</li>
+          </ol>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- IMAGE MODAL -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="inner">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <strong id="modalTitle"></strong>
+        <button onclick="closeModal()" class="btn alt">Close</button>
+      </div>
+      <img id="modalImg" src="" alt="">
+    </div>
+  </div>
+
+  <footer>
+    © 2025 — Merdeka Interactive Student Project. Replace or add images and sources before final submission.
+  </footer>
+
+  <script>
+    /* ---------- Tab navigation ---------- */
+    const navButtons = document.querySelectorAll('.nav-links button');
+    function setActiveButton(btn){
+      navButtons.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    navButtons.forEach(b=>{
+      b.addEventListener('click', ()=> {
+        const tab = b.dataset.tab;
+        showSection(tab);
+        setActiveButton(b);
+      });
+    });
+
+    function showSection(id){
+      // hide all sections inside main (only direct children that are sections)
+      document.querySelectorAll('main section').forEach(s=> s.style.display = 'none');
+      const el = document.getElementById(id);
+      if(el) el.style.display = 'block';
+      // scroll to top for presentation
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    // default initial state: show home
+    showSection('home');
+
+    // helper for aside quick links
+    function openSectionFromAside(id){
+      showSection(id);
+      // update nav active state
+      navButtons.forEach(b=> b.classList.toggle('active', b.dataset.tab === id));
+    }
+
+    /* ---------- Dark mode toggle ---------- */
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', ()=>{
+      document.body.classList.toggle('dark');
+      themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+    });
+
+    /* ---------- Music control ---------- */
+    const musicBtn = document.getElementById('musicBtn');
+    const music = document.getElementById('bgMusic');
+    let musicPlaying = false;
+    musicBtn.addEventListener('click', ()=> toggleMusic());
+    function toggleMusic(){
+      if(music.paused){
+        music.play().catch(()=>{/* autoplay may be blocked - ignore */});
+        musicBtn.textContent = '🔊';
+        musicPlaying = true;
+      } else {
+        music.pause();
+        musicBtn.textContent = '🎵';
+        musicPlaying = false;
+      }
+    }
+
+    /* ---------- Floating stars (decorative) ---------- */
+    const starsWrap = document.getElementById('stars-wrapper');
+    for(let i=0;i<18;i++){
+      const s = document.createElement('div');
+      s.className = 'star';
+      const left = Math.random()*100;
+      const top = 60 + Math.random()*40; // float from lower area
+      s.style.left = left + 'vw';
+      s.style.top = top + 'vh';
+      s.style.width = (6 + Math.random()*8) + 'px';
+      s.style.height = s.style.width;
+      s.style.opacity = (0.5 + Math.random()*0.6);
+      s.style.transform = 'translateY(0)';
+      const dur = 6 + Math.random()*8;
+      s.style.transition = `transform ${dur}s linear`;
+      starsWrap.appendChild(s);
+      // animate upward periodically
+      (function(el, d){
+        setInterval(()=> {
+          el.style.transform = 'translateY(-120vh)';
+          setTimeout(()=> el.style.transform = 'translateY(0)', d*1000 + 100);
+        }, (d+2)*1000);
+      })(s, dur);
+    }
+
+    /* ---------- Gallery modal ---------- */
+    function openModal(src, title){
+      document.getElementById('modalImg').src = src;
+      document.getElementById('modalTitle').textContent = title || '';
+      const modal = document.getElementById('modal');
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden','false');
+    }
+    function closeModal(){
+      const modal = document.getElementById('modal');
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden','true');
+      document.getElementById('modalImg').src = '';
+    }
+
+    // close modal on ESC
+    document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeModal(); });
+
+    /* ---------- Quiz logic ---------- */
+    const correctAnswers = {1:1957, 2:'tunku'};
+    const quizFeedback = document.getElementById('quizFeedback');
+    let userScore = JSON.parse(localStorage.getItem('merdekaScore') || '0');
+    const scoreBox = document.getElementById('scoreBox');
+    scoreBox.textContent = userScore ? `Last score: ${userScore} point(s)` : 'No quiz taken yet.';
+
+    function answerQuiz(qid, val){
+      const correct = correctAnswers[qid];
+      let awarded = 0;
+      if(qid === 1 && Number(val) === Number(correct)) awarded = 1;
+      if(qid === 2 && String(val) === String(correct)) awarded = 1;
+      // accumulate and store (simple per session score)
+      userScore = (userScore || 0) + awarded;
+      localStorage.setItem('merdekaScore', JSON.stringify(userScore));
+      scoreBox.textContent = `Last score: ${userScore} point(s)`;
+      quizFeedback.textContent = awarded ? 'Correct! Well done.' : 'Incorrect — try the next question.';
+      // gentle highlight
+      setTimeout(()=> quizFeedback.textContent = '', 4000);
+    }
+
+    /* ---------- Guestbook (feedback) ---------- */
+    const guestForm = document.getElementById('guestForm');
+    const guestbookEl = document.getElementById('guestbook');
+
+    function loadGuestbook(){
+      const list = JSON.parse(localStorage.getItem('merdekaGuestbook') || '[]');
+      if(!list.length){ guestbookEl.innerHTML = '<div style="color:#888">No messages yet. Submit your research evidence here.</div>'; return; }
+      guestbookEl.innerHTML = list.map(e=>{
+        return `<div class="entry"><strong>${escapeHtml(e.name)}</strong> <small style="color:#666"> — ${escapeHtml(e.time)}</small><div style="margin-top:6px">${escapeHtml(e.msg)}</div></div>`;
+      }).join('');
+    }
+
+    function saveEntry(e){
+      e.preventDefault();
+      const name = document.getElementById('gname').value.trim();
+      const msg = document.getElementById('gmsg').value.trim();
+      if(!name || !msg) return alert('Please enter name and a short message or source.');
+      const list = JSON.parse(localStorage.getItem('merdekaGuestbook') || '[]');
+      list.unshift({name, msg, time:new Date().toLocaleString()});
+      localStorage.setItem('merdekaGuestbook', JSON.stringify(list));
+      guestForm.reset();
+      loadGuestbook();
+      alert('Saved locally. Show this page to your teacher for grading.');
+    }
+
+    function clearGuestbook(){
+      if(!confirm('Clear all guestbook entries locally?')) return;
+      localStorage.removeItem('merdekaGuestbook');
+      loadGuestbook();
+    }
+
+    function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+    // init
+    loadGuestbook();
+
+    /* ---------- Accessibility: allow nav keyboard use ---------- */
+    document.querySelectorAll('.nav-links button').forEach(btn=>{
+      btn.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+      });
+    });
+
+    /* ---------- Ensure home is visible on load ---------- */
+    window.addEventListener('load', ()=> {
+      showSection('home');
+      // update nav active visually (in case mobile)
+      navButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === 'home'));
+    });
+  </script>
+</body>
+</html>
